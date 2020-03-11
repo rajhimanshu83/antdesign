@@ -88,10 +88,10 @@ export default class GlobalHeaderRight extends PureComponent {
     }
     return (
       <div className={className}>
-        {currentUser.name ? (
+        {currentUser.company_name ? (
           <HeaderDropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
-              <span className={styles.name}>{currentUser.name}</span>
+              <span className={styles.name}>{currentUser.company_name}</span>
             </span>
           </HeaderDropdown>
         ) : (

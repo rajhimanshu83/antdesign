@@ -18,9 +18,7 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-      if (!response.type || response.type !== 'Corporate') {
-        window.location.href = '/dashboard';
-      }
+      console.log(response)
       yield put({
         type: 'saveCurrentUser',
         payload: response,
