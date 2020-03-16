@@ -32,18 +32,18 @@ export default [
         name: 'Tariff',
         component: './List/BasicList',
       },
-      {
-        path: '/recentinvoices',
-        icon: 'paper-clip',
-        name: 'Recent Invoices',
-        component: './List/RecentInvoices',
-      },
-      {
-        path: '/customers',
-        icon: 'table',
-        name: 'Clients',
-        component: './List/customerlist',
-      },
+      // {
+      //   path: '/recentinvoices',
+      //   icon: 'paper-clip',
+      //   name: 'Recent Invoices',
+      //   component: './List/RecentInvoices',
+      // },
+      // {
+      //   path: '/customers',
+      //   icon: 'table',
+      //   name: 'Clients',
+      //   component: './List/customerlist',
+      // },
     ],
   },
 ];

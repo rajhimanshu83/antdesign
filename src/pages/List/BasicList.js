@@ -77,7 +77,7 @@ const genExtra = () => (
 }))
 @Form.create()
 class BasicList extends PureComponent {
-  state = { visible: false, done: false , expandIconPosition: 'left'
+  state = { visible: false, done: false , expandIconPosition: 'left', category: "", tariff:{}
 };
 
   formLayout = {
@@ -86,11 +86,12 @@ class BasicList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch,user } = this.props;
+    const vendorId = user.currentUser.id
     dispatch({
       type: 'rule/tariff',
       payload: {
-        count: 5,
+        vendorId,
       },
     });
     dispatch({
@@ -105,9 +106,11 @@ class BasicList extends PureComponent {
     this.setState({ expandIconPosition });
   };
 
-  showModal = () => {
+  showModal = (item) => {
     this.setState({
       visible: true,
+      category: item.category,
+      tariff:item,
       current: undefined,
     });
   };
@@ -120,10 +123,14 @@ class BasicList extends PureComponent {
   };
 
   handleDone = () => {
+    const { dispatch } = this.props;
     setTimeout(() => this.addBtn.blur(), 0);
     this.setState({
       done: false,
       visible: false,
+    });
+    dispatch({
+      type: 'rule/closeSuccessPop'
     });
   };
 
@@ -134,21 +141,22 @@ class BasicList extends PureComponent {
     });
   };
 
+  inputChange = (e,type) => {
+    const tariffData = this.state.tariff;
+    tariffData[type] = Number(e.target.value);
+    this.setState({
+      tariff: tariffData,
+    });
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     const { dispatch, form, appuser } = this.props;
     const { current } = this.state;
     setTimeout(() => this.addBtn.blur(), 0);
-    form.validateFields((err, fieldsValue) => {
-      console.log(fieldsValue);
-      if (err) return;
-      // this.setState({
-      //   done: true,
-      // });
-      dispatch({
-        type: 'rule/add',
-        payload: { ...fieldsValue },
-      });
+    dispatch({
+      type: 'rule/editTariff',
+      payload: this.state.tariff,
     });
   };
 
@@ -169,14 +177,12 @@ class BasicList extends PureComponent {
     const { expandIconPosition } = this.state;
     const { appusers } = this.props.rule;
     const { user } = this.props;
-    console.log(user)
-
     const {
       form: { getFieldDecorator },
     } = this.props;
-    const { visible, done, current = {} } = this.state;
+    const { visible, done, current = {}, tariff } = this.state;
 
-    const modalFooter = done
+    const modalFooter = rule.formSubmit === "success"
       ? { footer: null, onCancel: this.handleDone }
       : { okText: 'Submit', onOk: this.handleSubmit, onCancel: this.handleCancel };
 
@@ -186,13 +192,14 @@ class BasicList extends PureComponent {
       pageSize: 5,
       total: 50,
     };
-    const getModalContent = () => {
-      if (done) {
+    const getModalContent = (tarr) => {
+
+      if (rule.formSubmit === "success") {
         return (
           <Result
             type="success"
-            title="Added"
-            description="New Customer Created Successfully"
+            title="Edited"
+            description="Tariff Updated Successfully"
             actions={
               <Button type="primary" onClick={this.handleDone}>
                 Close
@@ -204,176 +211,49 @@ class BasicList extends PureComponent {
       }
       return (
         <Form onSubmit={this.handleSubmit}>
-          <Form.Item label="Name" {...this.formLayout}>
-            {getFieldDecorator('name', {
+          <Form.Item label="RatePerKM" {...this.formLayout}>
+          <Input placeholder="Enter RatePerKM" defaultValue={tarr.rate_per_km} onChange={(e)=>this.inputChange(e,"rate_per_km")} />
+            {/* {getFieldDecorator('RatePerKM', {
               rules: [
                 {
                   required: true,
-                  message: 'Name is required!',
+                  message: 'RatePerKM is required!',
                 },
               ],
-              initialvalue: current.name,
-            })(<Input placeholder="Enter Name" />)}
+              initialvalue: tarr.rate_per_km,
+            })(<Input placeholder="Enter RatePerKM" defaultValue="5" />)} */}
           </Form.Item>
-          <FormItem label="Phone Number" {...this.formLayout}>
-            {getFieldDecorator('number', {
-              rules: [{ required: true, message: 'Phone number is required' }],
-              initialvalue: current.number,
-            })(<Input placeholder="Enter Phone Number" />)}
-          </FormItem>
-          <Form.Item label="Room No" {...this.formLayout}>
-            {getFieldDecorator('room', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Room No is required!',
-                },
-              ],
-              initialvalue: current.room,
-            })(<Input placeholder="Enter Room No" />)}
-          </Form.Item>
-          <FormItem label="Roll" {...this.formLayout}>
-            {getFieldDecorator('roll', {
-              rules: [{ required: true, message: 'Roll No is required' }],
-              initialvalue: current.roll,
-            })(<Input placeholder="Enter Roll No" />)}
-          </FormItem>
         </Form>
       );
     };
     return (
       <PageHeaderWrapper>
         <Card title="Card Title">
-    <Card.Grid style={gridStyle}>  <Card
-    style={{ width: 300 }}
-    cover={
-      <img
-        alt="example"
-        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-      />
-    }
-    actions={[
-      <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
-    ]}
-  >
-    <Meta
-      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-      title="Card title"
-      description="This is the description"
-    />
-  </Card></Card.Grid>
-    <Card.Grid hoverable={false} style={gridStyle}>
-    <Card
-    style={{ width: 300 }}
-    cover={
-      <img
-        alt="example"
-        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-      />
-    }
-    actions={[
-      <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
-    ]}
-  >
-    <Meta
-      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-      title="Card title"
-      description="This is the description"
-    />
-  </Card>
-    </Card.Grid>
-    <Card.Grid style={gridStyle}><Card
-    style={{ width: 300 }}
-    cover={
-      <img
-        alt="example"
-        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-      />
-    }
-    actions={[
-      <SettingOutlined key="setting" />,
-      <EditOutlined key="edit" />,
-      <EllipsisOutlined key="ellipsis" />,
-    ]}
-  >
-    <Meta
-      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-      title="Card title"
-      description="This is the description"
-    />
-  </Card></Card.Grid>
-    <Card.Grid style={gridStyle}>Content</Card.Grid>
-    <Card.Grid style={gridStyle}>Content</Card.Grid>
-    <Card.Grid style={gridStyle}>Content</Card.Grid>
-    <Card.Grid style={gridStyle}>Content</Card.Grid>
-  </Card>
-        <div className={styles.standardList}>
-          <Card
-            className={styles.listCard}
-            bordered={false}
-            title="Customer List"
-            style={{ marginTop: 24 }}
-            bodyStyle={{ padding: '0 32px 40px 32px' }}
-          >
-            <Button
-              type="dashed"
-              style={{ width: '25%', marginBottom: 8 }}
-              icon="plus"
-              onClick={this.showModal}
-              ref={component => {
-                /* eslint-disable */
-                this.addBtn = findDOMNode(component);
-                /* eslint-enable */
-              }}
-            >
-              Add New Customer
-            </Button>
-          </Card>
-        </div>
-
-        <div>
-          <Table dataSource={appusers}>
-            <Column
-              title="Barcode ID"
-              dataIndex="barcode"
-              key="barcode"
-              render={barcode => {
-                if (!barcode) return <Tag color="red">Not Added</Tag>;
-                return (
-                  <span>
-                    <Tag color="blue">{barcode}</Tag>
-                  </span>
-                );
-              }}
-            />
-            <Column title="Name" dataIndex="name" key="name" />
-
-            <Column
-              title="Valid Upto"
-              dataIndex="valid"
-              key="valid"
-              render={valid => {
-                if (!valid) return <Tag color="red">No Validity</Tag>;
-                return (
-                  <span>
-                    <Tag color="blue">
-                      {moment(valid[user.currentUser.site]).format('YYYY-MM-DD HH:mm')}
-                    </Tag>
-                  </span>
-                );
-              }}
-            />
-            <Column title="Slot" dataIndex="activeSlots" key="bactiveSlots" />
-            <Column title="Number" dataIndex="number" key="number" />
-            <Column title="Action" key="Action" />
-          </Table>
-        </div>
+          {rule.tariffList.map(item => (
+            <Card.Grid style={gridStyle}>  
+              <Card
+                style={{ width: 300 }}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                  />
+            }
+                actions={[
+                  // <SettingOutlined key="setting" />,
+              <EditOutlined key="edit" onClick={()=> this.showModal(item)}  />,
+                  // <EllipsisOutlined key="ellipsis" />,
+            ]}
+              >
+                <Meta
+                  title={item.category}
+                />
+                <span>jsfskf</span>
+              </Card>
+            </Card.Grid>
+    ))}
+        </Card>
         <Modal
-          title="Add Customer"
           className={styles.standardListForm}
           width={640}
           bodyStyle={done ? { padding: '72px 0' } : { padding: '28px 0 0' }}
@@ -381,7 +261,7 @@ class BasicList extends PureComponent {
           visible={visible}
           {...modalFooter}
         >
-          {getModalContent()}
+          {getModalContent(tariff)}
         </Modal>
       </PageHeaderWrapper>
     );

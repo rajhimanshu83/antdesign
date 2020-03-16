@@ -33,9 +33,9 @@ const errorHandler = error => {
   const { status, url } = response;
 
   if (status === 401) {
-    notification.error({
-      message: 'Not logged in or the login has expired, please log in again.',
-    });
+    // notification.error({
+    //   message: 'Not logged in or the login has expired, please log in again.',
+    // });
     // @HACK
     /* eslint-disable no-underscore-dangle */
     // window.g_app._store.dispatch({

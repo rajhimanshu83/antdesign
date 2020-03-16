@@ -3,6 +3,8 @@ import {
   removeRule,
   addRule,
   updateRule,
+  tariff,
+  edittariff,
   customerlist,
   currentUser,
   addCustomer,
@@ -22,7 +24,9 @@ export default {
       list: [],
       pagination: {},
     },
+    tariffList:[],
     appusers: [],
+    formSubmit:"",
     user: [],
     appuser: [],
     recentInvoices: [],
@@ -41,9 +45,30 @@ export default {
         payload: response,
       });
     },
+    *tariff({ payload }, { call, put }) {
+      const response = yield call(tariff, payload);
+      yield put({
+        type: 'savetariffList',
+        payload: Array.isArray(response) ? response : [],
+      });
+    },
+    *editTariff({ payload }, { call, put }) {
+      const response = yield call(edittariff, payload);
+      // console.log(response)
+      yield put({
+        type: 'savetariffListSuccess',
+        payload: response ? "success": "failure",
+      });
+    },
+    *closeSuccessPop({}, { put }) {
+      yield put({
+        type: 'savetariffListSuccess',
+        payload: "failure",
+      });
+    },
+    
     *fetchUser(_, { call, put }) {
       const response = yield call(currentUser);
-      console.log(response);
       yield put({
         type: 'saveuser',
         payload: response,
@@ -137,6 +162,18 @@ export default {
       return {
         ...state,
         data: action.payload,
+      };
+    },
+    savetariffList(state, action) {
+      return {
+        ...state,
+        tariffList: action.payload,
+      };
+    },
+    savetariffListSuccess(state, action) {
+      return {
+        ...state,
+        formSubmit: action.payload,
       };
     },
     saveusers(state, action) {

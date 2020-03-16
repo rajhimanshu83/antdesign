@@ -8,6 +8,27 @@ export async function queryProjectNotice() {
 export async function currentUser() {
   return request('/api/v3/user');
 }
+
+export async function tariff(payload) {
+  return request(`https://testapi.moovlee.com/tariff/getAllDetails?id=${payload.vendorId}`, {
+    method:"GET",
+    headers:{
+      'Authorization':`bearer ${localStorage.getItem('antd-pro-authority')}`
+    }
+  });
+}
+
+export async function edittariff(payload) {
+  return request(`https://testapi.moovlee.com/tariff/add`, {
+    method:"POST",
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization':`bearer ${localStorage.getItem('antd-pro-authority')}`
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function customerledger(payload) {
   const id = payload.payload.id;
   return request(`/api/v3/customer/${id}/transactions`);
