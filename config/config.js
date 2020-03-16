@@ -87,8 +87,8 @@ export default {
       cookieDomainRewrite: ""
     }
   },
-  base: '/corporate/',
-  publicPath: '/corporate/',
+  base: '/',
+  publicPath: '/',
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,

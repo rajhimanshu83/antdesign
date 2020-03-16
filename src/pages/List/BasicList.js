@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 import moment from 'moment';
+import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+
 import { connect } from 'dva';
 import {
   List,
@@ -22,6 +24,7 @@ import {
   Form,
   DatePicker,
   Select,
+  Collapse,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Result from '@/components/Result';
@@ -36,17 +39,46 @@ const RadioGroup = Radio.Group;
 const SelectOption = Select.Option;
 const { Search, TextArea } = Input;
 
-@connect(({ rule, list, loading, appusers, appuser, user }) => ({
+const { Panel } = Collapse;
+const { Option } = Select;
+const { Meta } = Card;
+
+function callback(key) {
+  console.log(key);
+}
+
+const text = `
+  A dog is a type of domesticated animal.
+  Known for its loyalty and faithfulness,
+  it can be found as a welcome guest in many households across the world.
+`;
+
+const gridStyle = {
+  width: '300',
+  textAlign: 'center',
+};
+const genExtra = () => (
+  <SettingOutlined
+    onClick={event => {
+      // If you don't want click extra trigger collapse, you can prevent this:
+      event.stopPropagation();
+    }}
+  />
+);
+
+@connect(({ rule, list, loading, appusers, appuser, user,currentUser }) => ({
   list,
   appusers,
   rule,
   appuser,
+  currentUser,
   user,
   loading: loading.models.list,
 }))
 @Form.create()
 class BasicList extends PureComponent {
-  state = { visible: false, done: false };
+  state = { visible: false, done: false , expandIconPosition: 'left'
+};
 
   formLayout = {
     labelCol: { span: 7 },
@@ -56,12 +88,22 @@ class BasicList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
+      type: 'rule/tariff',
+      payload: {
+        count: 5,
+      },
+    });
+    dispatch({
       type: 'rule/fetch',
       payload: {
         count: 5,
       },
     });
   }
+
+  onPositionChange = expandIconPosition => {
+    this.setState({ expandIconPosition });
+  };
 
   showModal = () => {
     this.setState({
@@ -122,10 +164,13 @@ class BasicList extends PureComponent {
     const {
       list: { list },
       loading,
-      rule,
+      rule
     } = this.props;
+    const { expandIconPosition } = this.state;
     const { appusers } = this.props.rule;
     const { user } = this.props;
+    console.log(user)
+
     const {
       form: { getFieldDecorator },
     } = this.props;
@@ -198,6 +243,74 @@ class BasicList extends PureComponent {
     };
     return (
       <PageHeaderWrapper>
+        <Card title="Card Title">
+    <Card.Grid style={gridStyle}>  <Card
+    style={{ width: 300 }}
+    cover={
+      <img
+        alt="example"
+        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+      />
+    }
+    actions={[
+      <SettingOutlined key="setting" />,
+      <EditOutlined key="edit" />,
+      <EllipsisOutlined key="ellipsis" />,
+    ]}
+  >
+    <Meta
+      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+      title="Card title"
+      description="This is the description"
+    />
+  </Card></Card.Grid>
+    <Card.Grid hoverable={false} style={gridStyle}>
+    <Card
+    style={{ width: 300 }}
+    cover={
+      <img
+        alt="example"
+        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+      />
+    }
+    actions={[
+      <SettingOutlined key="setting" />,
+      <EditOutlined key="edit" />,
+      <EllipsisOutlined key="ellipsis" />,
+    ]}
+  >
+    <Meta
+      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+      title="Card title"
+      description="This is the description"
+    />
+  </Card>
+    </Card.Grid>
+    <Card.Grid style={gridStyle}><Card
+    style={{ width: 300 }}
+    cover={
+      <img
+        alt="example"
+        src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+      />
+    }
+    actions={[
+      <SettingOutlined key="setting" />,
+      <EditOutlined key="edit" />,
+      <EllipsisOutlined key="ellipsis" />,
+    ]}
+  >
+    <Meta
+      avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+      title="Card title"
+      description="This is the description"
+    />
+  </Card></Card.Grid>
+    <Card.Grid style={gridStyle}>Content</Card.Grid>
+    <Card.Grid style={gridStyle}>Content</Card.Grid>
+    <Card.Grid style={gridStyle}>Content</Card.Grid>
+    <Card.Grid style={gridStyle}>Content</Card.Grid>
+  </Card>
         <div className={styles.standardList}>
           <Card
             className={styles.listCard}

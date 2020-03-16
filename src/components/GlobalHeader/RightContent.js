@@ -76,7 +76,7 @@ export default class GlobalHeaderRight extends PureComponent {
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="logout">
           <Icon type="logout" />
-          <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
+          <FormattedMessage id="menu.account.logout" defaultMessage="Logout" />
         </Menu.Item>
       </Menu>
     );

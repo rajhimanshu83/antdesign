@@ -25,10 +25,11 @@ export default [
     routes: [
       // dashboard
       { path: '/', redirect: '/list', authority: ['admin', 'user'] },
+      // { path: '/', redirect: '/user', authority: ['admin', 'user'] },
       {
         path: '/list',
         icon: 'user',
-        name: 'App Users',
+        name: 'Tariff',
         component: './List/BasicList',
       },
       {

@@ -154,6 +154,21 @@ export async function fakeAccountLogin(params) {
   });
 }
 
+export async function userAccountLogin(params) {
+  // const params = {"email":"balaji.p@pravertech.com","password":"test@123"}
+  return request('https://testapi.moovlee.com/vendor/signin', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(params),
+  });
+  // return request('/api/login/account', {
+  //   method: 'POST',
+  //   data: params,
+  // });
+}
+
 export async function fakeRegister(params) {
   return request('/api/register', {
     method: 'POST',

@@ -20,6 +20,12 @@ export function getAuthority(str) {
   return authority;
 }
 export function setAuthority(authority) {
-  const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  return localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
+  // const proAuthority = typeof authority === 'string' ? [authority] : authority;
+  return localStorage.setItem('antd-pro-authority', authority);
+}
+
+export function getToken() {
+  // const proAuthority = typeof authority === 'string' ? [authority] : authority;
+  const isLoggedIn = localStorage.getItem('antd-pro-authority') ? localStorage.getItem('antd-pro-authority') : false;
+  return  isLoggedIn;
 }
