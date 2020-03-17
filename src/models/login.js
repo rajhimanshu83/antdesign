@@ -16,7 +16,6 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(userAccountLogin, payload);
-      console.log(response);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
@@ -27,18 +26,18 @@ export default {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            redirect = null;
-          }
-        }
+        const { redirect } = params;
+        // if (redirect) {
+        //   const redirectUrlParams = new URL(redirect);
+        //   if (redirectUrlParams.origin === urlParams.origin) {
+        //     redirect = redirect.substr(urlParams.origin.length);
+        //     if (redirect.match(/^\/.*#/)) {
+        //       redirect = redirect.substr(redirect.indexOf('#') + 1);
+        //     }
+        //   } else {
+        //     redirect = null;
+        //   }
+        // }
         yield put(routerRedux.replace(redirect || '/'));
       }
     },
@@ -73,7 +72,7 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.token);
+      setAuthority(payload.token,payload.id);
       return {
         ...state,
         status: payload.status,

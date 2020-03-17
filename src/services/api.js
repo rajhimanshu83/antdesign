@@ -10,7 +10,7 @@ export async function currentUser() {
 }
 
 export async function tariff(payload) {
-  return request(`https://testapi.moovlee.com/tariff/getAllDetails?id=${payload.vendorId}`, {
+  return request(`https://testapi.moovlee.com/tariff/getAllDetails?id=${localStorage.getItem('vendorId')}`, {
     method:"GET",
     headers:{
       'Authorization':`bearer ${localStorage.getItem('antd-pro-authority')}`

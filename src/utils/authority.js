@@ -19,13 +19,14 @@ export function getAuthority(str) {
   }
   return authority;
 }
-export function setAuthority(authority) {
+export function setAuthority(authority,vendorId) {
   // const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  return localStorage.setItem('antd-pro-authority', authority);
+  localStorage.setItem('antd-pro-authority', authority);
+  localStorage.setItem('vendorId', vendorId);
 }
 
 export function getToken() {
   // const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  const isLoggedIn = localStorage.getItem('antd-pro-authority') ? localStorage.getItem('antd-pro-authority') : false;
+  const isLoggedIn = localStorage.getItem('antd-pro-authority') !== undefined ? false : true;
   return  isLoggedIn;
 }

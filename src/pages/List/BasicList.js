@@ -86,21 +86,28 @@ class BasicList extends PureComponent {
   };
 
   componentDidMount() {
-    const { dispatch,user } = this.props;
-    const vendorId = user.currentUser.id
-    dispatch({
-      type: 'rule/tariff',
-      payload: {
-        vendorId,
-      },
-    });
-    dispatch({
-      type: 'rule/fetch',
-      payload: {
-        count: 5,
-      },
-    });
+    const { dispatch } = this.props;
+      dispatch({
+        type: 'rule/tariff',
+        payload: {
+          vendorId:""
+        },
+      });
   }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   // only update chart if the data has changed
+  //   const { dispatch,user } = this.props;
+  //   const vendorId = user.currentUser.id;
+  //   if (vendorId) {
+  //     dispatch({
+  //     type: 'rule/tariff',
+  //     payload: {
+  //       vendorId,
+  //     },
+  //   });
+  // }
+  // }
 
   onPositionChange = expandIconPosition => {
     this.setState({ expandIconPosition });
@@ -226,45 +233,48 @@ class BasicList extends PureComponent {
         </Form>
       );
     };
+
+    if (rule.tariffList.length > 0){
+      return (
+        <PageHeaderWrapper>
+          {rule.tariffList.length > 0 && <Card title="Card Title">
+            {rule.tariffList.map(item => (
+              <Card.Grid style={gridStyle}>  
+                <Card
+                  style={{ width: 300 }}
+                  actions={[
+                    // <SettingOutlined key="setting" />,
+                <EditOutlined key="edit" onClick={()=> this.showModal(item)}  />,
+                    // <EllipsisOutlined key="ellipsis" />,
+              ]}
+                >
+                  <Meta
+                    title={item.category}
+                  />
+                  <span>jsfskf</span>
+                </Card>
+              </Card.Grid>
+      ))}
+          </Card>}
+          <Modal
+            className={styles.standardListForm}
+            width={640}
+            bodyStyle={done ? { padding: '72px 0' } : { padding: '28px 0 0' }}
+            destroyOnClose
+            visible={visible}
+            {...modalFooter}
+          >
+            {getModalContent(tariff)}
+          </Modal>
+        </PageHeaderWrapper>
+      );
+    }
     return (
       <PageHeaderWrapper>
-        <Card title="Card Title">
-          {rule.tariffList.map(item => (
-            <Card.Grid style={gridStyle}>  
-              <Card
-                style={{ width: 300 }}
-                cover={
-                  <img
-                    alt="example"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                  />
-            }
-                actions={[
-                  // <SettingOutlined key="setting" />,
-              <EditOutlined key="edit" onClick={()=> this.showModal(item)}  />,
-                  // <EllipsisOutlined key="ellipsis" />,
-            ]}
-              >
-                <Meta
-                  title={item.category}
-                />
-                <span>jsfskf</span>
-              </Card>
-            </Card.Grid>
-    ))}
-        </Card>
-        <Modal
-          className={styles.standardListForm}
-          width={640}
-          bodyStyle={done ? { padding: '72px 0' } : { padding: '28px 0 0' }}
-          destroyOnClose
-          visible={visible}
-          {...modalFooter}
-        >
-          {getModalContent(tariff)}
-        </Modal>
+        Loading
       </PageHeaderWrapper>
-    );
+    )
+    
   }
 }
 

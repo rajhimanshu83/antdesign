@@ -6,13 +6,11 @@ export async function query() {
 
 export async function queryCurrent() {
   // return request('/api/v3/vendor/signin');
-  const params = {"email":"balaji.p@pravertech.com","password":"test@123"}
-  return request('https://testapi.moovlee.com/vendor/signin', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(params),
+  return request(`https://testapi.moovlee.com/vendor/account`, {
+    method:"GET",
+    headers:{
+      'Authorization':`bearer ${localStorage.getItem('antd-pro-authority')}`
+    }
   });
 }
 
